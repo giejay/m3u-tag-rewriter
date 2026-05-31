@@ -1,0 +1,21 @@
+services:
+  m3u-modifier:
+    build: .
+    container_name: m3u-modifier
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    volumes:
+      # Persist the OAuth token so re-auth is not needed after container restarts
+      - token-data:/data
+
+    environment:
+      # Override token path to use the persistent volume
+      DROPBOX_TOKEN_FILE: /data/dropbox_token.json
+      # Set TZ so the cron schedule reflects your local timezone
+      TZ: Europe/Amsterdam
+
+volumes:
+  token-data:
