@@ -23,6 +23,11 @@ if [ ! -f "$TOKEN_FILE" ]; then
     echo "  No Dropbox token found – complete auth before cron runs."
     echo "  Run: docker compose exec m3u-modifier python3 /app/m3u_dropbox_modifier.py"
     echo "============================================================"
+else
+    echo "[entrypoint] Running initial startup sync ..."
+    if ! /usr/local/bin/python3 /app/m3u_dropbox_modifier.py >> /var/log/cron.log 2>&1; then
+        echo "[entrypoint] Initial startup sync failed; continuing with cron schedule."
+    fi
 fi
 
 echo "[entrypoint] Starting cron daemon …"
